@@ -65,10 +65,10 @@ bundles, installed via [skills.sh](https://skills.sh) under `.claude/skills/`
 - `/cleanup-repo` — prune merged branches, worktrees, filesystem cruft.
 - `/triage-pr` — drive a PR from draft-with-failing-CI to merge-ready.
 
-Each skill reads its own `config.json` (reconciled by `initialise-skills` from
+Each skill reads its own `config.json` (reconciled by `rheged-skills-setup` from
 this repo's facts). The repo's `lint:md` already excludes `.claude/skills/` and
 `.agents/skills/`, so the vendored bundles are not linted. Re-install or upgrade
-with `npx skills add … --copy`; re-run `initialise-skills` afterwards.
+with `npx skills add … --copy`; re-run `rheged-skills-setup` afterwards.
 
 ## Local hooks
 
