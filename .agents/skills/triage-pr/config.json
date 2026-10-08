@@ -1,7 +1,6 @@
 {
   "reviewBots": [
     "claude",
-    "cursor",
     "coderabbitai"
   ],
   "maxCiRounds": 5,
@@ -11,11 +10,13 @@
   "issueKeys": [
     "A"
   ],
-  "followUpLabel": "",
+  "followUpLabel": "follow-up",
   "followUpProject": "Follow-up issues",
   "followUpState": "Backlog",
   "deferNonBlocking": true,
-  "humanEnvelope": true,
+  "humanEnvelope": false,
   "reviewIdleMinutes": 5,
-  "reviewWaitMaxMinutes": 20
+  "reviewWaitMaxMinutes": 20,
+  "reviewBotChecks": {},
+  "maxReviewRounds": 2
 }
