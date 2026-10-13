@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.1",
-    "@rheged-studio/changelog-core": "^1.1.1",
+    "@rheged-studio/changelog-core": "^1.2.0",
     "@rheged-studio/commitlint-config": "^1.0.1",
     "@types/node": "^25.6.0",
     "bats": "1.13.0",
