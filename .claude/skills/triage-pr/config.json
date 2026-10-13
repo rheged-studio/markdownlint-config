@@ -8,6 +8,7 @@
   "promoteOnGreen": true,
   "linearTeamName": "Rheged Studio",
   "issueKeys": [
+    "R",
     "A"
   ],
   "followUpLabel": "follow-up",
