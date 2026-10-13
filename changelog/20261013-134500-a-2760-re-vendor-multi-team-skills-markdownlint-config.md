@@ -3,10 +3,10 @@ title: Re-vendor multi-team skills and changelog-core 1.2.0
 release_note: ""
 version:
 created_at: "2026-10-13T13:45:00Z"
-merged_at:
+merged_at: "2026-10-13T13:31:39Z"
 branch: a-2760-markdownlint-config-re-vendor-the-multi-team-skills-and
 pr: 83
-commit:
+commit: caeefb6
 author: rob@rheged.studio
 co_authors: []
 category: chore
@@ -17,9 +17,9 @@ issues:
 affected_packages:
   - infrastructure
 stats:
-  files_changed:
-  loc_added:
-  loc_removed:
+  files_changed: 81
+  loc_added: 2288
+  loc_removed: 705
 ---
 
 ## Changed
