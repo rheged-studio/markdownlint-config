@@ -24,13 +24,13 @@ detector serves every skill that uses a key. A key found in a skill's
 | `reviewBots` | triage-pr | Fixed | `["claude", "coderabbitai"]` |
 | `maxCiRounds` | triage-pr | Fixed | `5` |
 | `maxReviewRounds` | triage-pr | Fixed (Phase B re-review rounds after apply pushes) | `2` |
-| `reviewBotChecks` | triage-pr | `{ "claude": { "name": "<job id>", "producer": "github-actions" } }` when a `.github/workflows/*.yml` job calls the estate `reusable-claude-code-review.yml` (the caller job id is the check's leading `<job id> / claude-review` segment), so a clean Claude review settles on its terminal check (A-2453); `{}` otherwise. An existing `{}` equals the example placeholder, so it is filled on reconcile; any other mapping is a deliberate edit (drift) and is kept | `{}` |
+| `reviewBotChecks` | triage-pr | `{ "claude": { "name": "<job id>", "producer": "github-actions" } }` when a `.github/workflows/*.yml` job calls the estate `reusable-claude-code-review.yml` (the caller job id is the check's leading `<job id> / claude-review` segment), so a clean Claude review settles on its terminal check (A-2453); plus `"coderabbitai": { "name": "CodeRabbit", "producer": "coderabbitai" }` when a root `.coderabbit.yaml`/`.yml` exists and doesn't set `commit_status: false`, so the settle waits for CodeRabbit's review rather than its "Currently processing" placeholder (A-2755); `{}` when neither applies. An existing `{}` equals the example placeholder, so it is filled on reconcile; any other mapping is a deliberate edit (drift) and is kept | `{}` |
 | `deferNonBlocking` | triage-pr | Fixed (impact gate: defer valid in-scope but non-blocking findings) | `true` |
 | `humanEnvelope` | triage-pr | Fixed (unattended Phase B; set `true` to halt for disposition approval) | `false` |
 | `reviewIdleMinutes` | triage-pr | Fixed (hybrid review-settle idle window) | `10` |
 | `reviewWaitMaxMinutes` | triage-pr | Fixed (hybrid review-settle hard cap) | `20` |
 | `followUpLabel` | triage-pr | Fixed (opt-in follow-up capture) | `"follow-up"` |
-| `followUpProject` | triage-pr | Supplied via stdin `facts.followUpProject`; **fallback catch-all** when a follow-up cannot inherit a live project from the PR's Linear issue (A-1541). Required when capture is on (`linearTeamName` set) | `needs-manual-input` when team is set and no fact; `""` when capture is off |
+| `followUpProject` | triage-pr | Supplied via stdin `facts.followUpProject`; **fallback catch-all** for a follow-up whose PR has no linked Linear issue to file it under as a sub-issue (A-1541 / A-2756). Required when capture is on (`linearTeamName` set) | `needs-manual-input` when team is set and no fact; `""` when capture is off |
 | `followUpState` | triage-pr | Fixed (opt-in follow-up capture; initial state for created issues) | `"Backlog"` |
 | `workspaces` | preflight | n/a — preflight self-detects | never written |
 
@@ -52,7 +52,15 @@ detector serves every skill that uses a key. A key found in a skill's
   the prefix of the most recently committed branch, so a repo whose Linear team was
   renamed (…→ASW→SK→A) yields `["A"]` rather than every prefix on stale branches
   (A-556). Pass `facts.issueKeys` to override when the heuristic is wrong (e.g. a
-  fresh repo with no keyed branches, or one genuinely using several keys).
+  fresh repo with no keyed branches).
+- **`issueKeys` detection never unions keys — multi-key repos need `--set`.** A
+  repo carrying several teams' branches (e.g. `c-` Cadogan, `r-` Rheged and legacy
+  `a-` branches) still detects only the newest keyed branch's single key. Set the
+  full list explicitly, per skill that uses it, e.g.
+  `--set linear-sync.issueKeys='["R","A"]'` (and likewise `cleanup-repo`,
+  `triage-pr`, `changelog`), or pass it as `facts.issueKeys`. An existing
+  multi-key value is not overwritten by a narrower detected one (it is reported as
+  drift and kept), but a fresh install starts from the detected single key.
 - **Structural defaults can read as a placeholder.** When an existing value equals
   both the example placeholder and the structural default, the key is `unchanged`
   (not flagged), because the detector emits that same default confidently.
