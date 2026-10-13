@@ -2,8 +2,8 @@
 title: Add commitlint pre-push range check
 release_note:
 version: 3.0.0
-created_at: '2026-07-23T14:48:00Z'
-merged_at: '2026-07-23T15:05:34Z'
+created_at: "2026-07-23T14:48:00Z"
+merged_at: "2026-07-23T15:05:34Z"
 branch: a-1023-tier-2-fan-out-commitlint-pre-push
 pr: 47
 commit: cb8d016
@@ -12,7 +12,7 @@ co_authors: []
 category: chore
 breaking: false
 issues:
-  - A-1023
+  - R-1023
 stats:
   files_changed: 6
   loc_added: 726
@@ -23,7 +23,7 @@ stats:
 ## Added
 
 - Best-effort `commitlint --from origin/main --to HEAD` check in `.husky/pre-push`
-  ([A-1023](https://linear.app/rheged-studio/issue/A-1023)), alongside existing pre-push
+  ([R-1023](https://linear.app/rheged-studio/issue/R-1023)), alongside existing pre-push
   checks. Skips with an installation hint when `@commitlint/cli` is missing or when
   `origin/main` is not a resolvable ref; bypassable with `git push --no-verify`.
   Complements CI's `reusable-validate-commits` gate rather than replacing it.

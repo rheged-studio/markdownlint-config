@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  # No workflow_dispatch (A-326). Re-run a failed release via "Re-run jobs" on
+  # No workflow_dispatch (R-326). Re-run a failed release via "Re-run jobs" on
   # the original push run.
 
 concurrency:
@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 
 # Defence-in-depth: deny default token permissions; each job declares only what
-# it needs (ASW-313).
+# it needs (R-313).
 permissions: {}
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
     with:
       npm-scope: ${{ needs.config.outputs.npm_scope }}
       # Config-only package (published artefact is .markdownlint.jsonc) — no build
-      # script, so skip the verification build (A-624).
+      # script, so skip the verification build (R-624).
       build: false
     permissions:
       # Required by the reusable release workflow to create releases and tags.
@@ -41,8 +41,8 @@ jobs:
       # Required for artifact attestations.
       attestations: write
 
-  # Post-merge changelog enrich / finalise via changelog-core (A-798 / A-821).
-  # Pin at A-821 merge SHA (shared-workflows#65) until @v1 moves.
+  # Post-merge changelog enrich / finalise via changelog-core (R-798 / R-821).
+  # Pin at R-821 merge SHA (shared-workflows#65) until @v1 moves.
   # secrets: inherit passes ROADRUNNER_PRIVATE_KEY for the App-token write-back.
   # Runs independently of `release` — both read the bumped version from the
   # committed package.json; no publish artifact is needed.

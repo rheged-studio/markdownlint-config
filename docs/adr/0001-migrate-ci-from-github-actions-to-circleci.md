@@ -1,21 +1,21 @@
 # 0001 — Migrate CI from GitHub Actions to CircleCI
 
-> **Superseded by [0002 — Changesets → Conventional Commits (release-please)](./0002-changesets-to-conventional-commits.md) (2026-06-23).** This repo stays on GitHub Actions: the estate standardised on release-please driven by a private orchestrator (A-379), which resolves the release-pipeline pain that motivated the CircleCI evaluation without changing CI provider. The CircleCI migration was never executed. Retained for history.
+> **Superseded by [0002 — Changesets → Conventional Commits (release-please)](./0002-changesets-to-conventional-commits.md) (2026-06-23).** This repo stays on GitHub Actions: the estate standardised on release-please driven by a private orchestrator (R-379), which resolves the release-pipeline pain that motivated the CircleCI evaluation without changing CI provider. The CircleCI migration was never executed. Retained for history.
 
 - **Status:** Superseded by 0002
 - **Date:** 2026-05-12
 - **Last research pass:** 2026-05-12 (CircleCI + npm TP docs)
 - **Deciders:** Rob Easthope (sole maintainer of `@rheged-studio/markdownlint-config`)
 - **Tracking issues:**
-  - [A-150](https://linear.app/goose-and-hobbes/issue/A-150) — origin POC issue (release-only)
-  - [A-154](https://linear.app/goose-and-hobbes/issue/A-154) — expanded scope (all CI to CircleCI, Claude carve-out)
-  - [A-149](https://linear.app/goose-and-hobbes/issue/A-149) — the GitHub Actions OIDC failure that motivated the evaluation
+  - [R-150](https://linear.app/rheged-studio/issue/R-150) — origin POC issue (release-only)
+  - [R-154](https://linear.app/rheged-studio/issue/R-154) — expanded scope (all CI to CircleCI, Claude carve-out)
+  - [R-149](https://linear.app/rheged-studio/issue/R-149) — the GitHub Actions OIDC failure that motivated the evaluation
 
 ## Context
 
-The npm publish flow for `@rheged-studio/markdownlint-config` uses OIDC Trusted Publishing on GitHub Actions and currently emits a provenance attestation. [A-149](https://linear.app/goose-and-hobbes/issue/A-149) tracks an eight-plus-iteration debugging effort against that flow without convergence on root cause. Each iteration requires pushing a workflow change, waiting for the GitHub Actions run, and reading logs after the fact — there is no laptop-side reproduction.
+The npm publish flow for `@rheged-studio/markdownlint-config` uses OIDC Trusted Publishing on GitHub Actions and currently emits a provenance attestation. [R-149](https://linear.app/rheged-studio/issue/R-149) tracks an eight-plus-iteration debugging effort against that flow without convergence on root cause. Each iteration requires pushing a workflow change, waiting for the GitHub Actions run, and reading logs after the fact — there is no laptop-side reproduction.
 
-[A-150](https://linear.app/goose-and-hobbes/issue/A-150) was opened to evaluate CircleCI as an alternative, motivated by `circleci local execute` (which runs single jobs in Docker on the developer machine) and by the hypothesis that the npm-side TP rejection might be specific to how GitHub Actions presents OIDC claims. Subsequent scope expansion broadens the question from "CircleCI for the release pipeline" to "CircleCI for all CI in this repo" — the scope of this ADR.
+[R-150](https://linear.app/rheged-studio/issue/R-150) was opened to evaluate CircleCI as an alternative, motivated by `circleci local execute` (which runs single jobs in Docker on the developer machine) and by the hypothesis that the npm-side TP rejection might be specific to how GitHub Actions presents OIDC claims. Subsequent scope expansion broadens the question from "CircleCI for the release pipeline" to "CircleCI for all CI in this repo" — the scope of this ADR.
 
 The two Claude bot workflows (`.github/workflows/claude.yml`, `.github/workflows/claude-code-review.yml`) are excluded. They subscribe to GitHub-native event types (`issue_comment`, `pull_request_review_comment`, `issues.opened`, `pull_request_review`) that CircleCI cannot listen to. Bridging them via a webhook forwarder is not worth the engineering work for this carve-out; they stay on GitHub Actions.
 
@@ -27,12 +27,12 @@ Five facts from the docs research that are load-bearing — they were assumed di
 2. **No `changesets/action` equivalent exists for CircleCI.** The maintainers' position (Changesets Discussion [#1067](https://github.com/changesets/changesets/discussions/1067)): _"At the moment there is nothing builtin to accomplish this — but you could copy-paste `changesets/action` and introduce the required changes."_ There is no orb, no maintained community package, and Cypress (one of the largest CircleCI + changesets users) has [an open tracking issue](https://github.com/cypress-io/cypress/issues/33591) for the same migration without a worked example. This is non-trivial engineering work, not config-only.
 3. **Provenance attestation is not generated for CircleCI publishes, and the gap is provider-specific.** GitLab CI/CD publishes via npm TP _do_ get provenance. The gap is "CircleCI specifically," not "non-GitHub-Actions in general." Likely root cause is that CircleCI's OIDC issuer is per-org (`https://oidc.circleci.com/org/<organization_id>`), complicating Fulcio trust-root configuration. The npm changelog from 2026-04-06 (the CircleCI launch) explicitly calls it out and there is no subsequent announcement closing the gap as of today.
 4. **Three pieces of CI configuration move out of `config.yml` into CircleCI project settings.** "Only build pull requests" (the `on: pull_request` equivalent), "Auto-cancel redundant workflows" (the `concurrency` equivalent), and context branch/project restrictions are all project-level toggles in the CircleCI web UI, not declarable in `.circleci/config.yml`. This is a real reviewability regression — these settings won't appear in PR diffs and won't survive a `circleci config validate`.
-5. **`circleci local execute` is significantly more limited than the marketing implies.** From CircleCI's own docs: _"Only single jobs can be run locally, not workflows"_, _"encrypted environment variables configured in the web application will not be imported into local builds"_, _"Caching is not currently supported in local jobs"_. There is no documented local OIDC support. The local CLI is a syntax-validation and quick-iteration tool, not a full release-pipeline simulator. The debugging benefit is real but smaller than A-150 originally assumed.
+5. **`circleci local execute` is significantly more limited than the marketing implies.** From CircleCI's own docs: _"Only single jobs can be run locally, not workflows"_, _"encrypted environment variables configured in the web application will not be imported into local builds"_, _"Caching is not currently supported in local jobs"_. There is no documented local OIDC support. The local CLI is a syntax-validation and quick-iteration tool, not a full release-pipeline simulator. The debugging benefit is real but smaller than R-150 originally assumed.
 
 ## Decision drivers
 
-- **Local-execution debuggability.** The primary motivation. Even with the limitations in finding (5), single-job local execution is more than GitHub Actions offers and would meaningfully shorten A-149's class of feedback loop.
-- **npm publish reliability.** If CircleCI's TP claims are accepted where GitHub Actions' are not, the migration resolves A-149 directly. If both providers fail at the same npm boundary, A-149 is npm-side and CircleCI buys nothing for that specific problem — but the local-execution benefit remains. Note: [npm/cli#8976](https://github.com/npm/cli/issues/8976) is an open bug for OIDC E404 on scoped packages from `changesets/action`; if the root cause is in the npm CLI's OIDC flow rather than `changesets/action`, it will bite CircleCI too. Worth tracking.
+- **Local-execution debuggability.** The primary motivation. Even with the limitations in finding (5), single-job local execution is more than GitHub Actions offers and would meaningfully shorten R-149's class of feedback loop.
+- **npm publish reliability.** If CircleCI's TP claims are accepted where GitHub Actions' are not, the migration resolves R-149 directly. If both providers fail at the same npm boundary, R-149 is npm-side and CircleCI buys nothing for that specific problem — but the local-execution benefit remains. Note: [npm/cli#8976](https://github.com/npm/cli/issues/8976) is an open bug for OIDC E404 on scoped packages from `changesets/action`; if the root cause is in the npm CLI's OIDC flow rather than `changesets/action`, it will bite CircleCI too. Worth tracking.
 - **Provenance attestation availability.** Regression risk. Migrating costs the published artifact its provenance badge until CircleCI gains support (no announced timeline).
 - **Engineering investment.** Per finding (2), this is not just "port a YAML file." It's "build and maintain a `changesets/action` replacement as a shell-script driver in this repo." Manageable but not free.
 - **Rollback story.** Per finding (1), there is no soft cutover. Mitigation options are explored in the Migration Plan below.
@@ -42,30 +42,30 @@ Five facts from the docs research that are load-bearing — they were assumed di
 
 ## Considered options
 
-### Option A — Stay on GitHub Actions; keep grinding A-149
+### Option A — Stay on GitHub Actions; keep grinding R-149
 
 - **Pros:** Provenance retained. Single provider for non-Claude CI. No learning curve. No bootstrap dance. No need to build a `changesets/action` replacement.
-- **Cons:** The debugging black box that motivated this evaluation persists. A-149 has shown that "just keep iterating" is not converging.
+- **Cons:** The debugging black box that motivated this evaluation persists. R-149 has shown that "just keep iterating" is not converging.
 
 ### Option B — Hybrid: release publish on GitHub Actions, PR validation on CircleCI
 
 Move PR-validation jobs to CircleCI. Keep `release.yml` on GitHub Actions to preserve provenance and avoid rebuilding the changesets release driver.
 
 - **Pros:** Provenance retained. Local-execution debugging available for the PR-validation surface. The release pipeline (and its complex `changesets/action` dependency) is untouched.
-- **Cons:** Two CI providers permanently (plus Claude). Doesn't test the A-149 hypothesis at all — the release pipeline is exactly what's broken and it doesn't move.
+- **Cons:** Two CI providers permanently (plus Claude). Doesn't test the R-149 hypothesis at all — the release pipeline is exactly what's broken and it doesn't move.
 
 ### Option C — Full migration with Claude carve-out (recommended)
 
 Move both `ci.yml` and `release.yml` to CircleCI. Leave the Claude workflows on GitHub Actions.
 
-- **Pros:** Tests the A-149 hypothesis cleanly. Local-execution debugging available for the release pipeline. One provider for the human-driven CI surface.
+- **Pros:** Tests the R-149 hypothesis cleanly. Local-execution debugging available for the release pipeline. One provider for the human-driven CI surface.
 - **Cons:** Loses provenance until CircleCI gains support. Requires building a shell-script `changesets/action` replacement (~1-2 days of engineering work, judging from the GitLab community equivalent at `un-ts/changesets-gitlab`). Single-active TP mapping means cutover requires a canary package or a break-glass token window. `circleci local execute` is more limited than originally hoped (single-job, no secrets, no OIDC).
 
 ### Option D — Hybrid: PR validation on GHA, release on CircleCI
 
 Inverse of B. Move only `release.yml` to CircleCI.
 
-- **Pros:** Smallest surface that directly tests the A-149 hypothesis.
+- **Pros:** Smallest surface that directly tests the R-149 hypothesis.
 - **Cons:** Provenance still lost. PR validation continues on the provider we want to leave. Most awkward end state.
 
 ## Decision
@@ -154,13 +154,13 @@ These are facts that came out of the research and don't fit cleanly under any si
 - **CircleCI bot's git committer identity.** What `git config user.name` / `user.email` should the version-PR job use to commit the version bump? This determines what to add to the husky `pre-push` allowlist. Decided during Phase 1 step 3 (typically: a dedicated bot account whose PAT lives in a CircleCI context, with a stable username like `circleci-release-bot`).
 - **GitHub Releases via `gh` CLI vs. raw REST.** Both work; `gh` is more ergonomic but requires apt-installing it in the job (the CircleCI default Node images don't ship `gh`). Decision: install `gh` once at job-start; cost is negligible (~5s).
 - **Branch-protection bypass mechanism.** Currently GHA uses `secrets.RELEASE_PAT` (with `GITHUB_TOKEN` fallback). CircleCI equivalent is a GitHub PAT stored in a context. Need to create a dedicated bot PAT with `contents: write` and `pull-requests: write` scopes.
-- **Will the npm-side TP rejection reproduce on CircleCI?** The original A-149 hypothesis. The Phase 1 snapshot publish (step 4) tests it. If it reproduces, the issue is npm-side and this whole migration buys only the local-execution improvement; in that case the recommendation flips to Option B and A-149 becomes "wait on npm-side fix."
+- **Will the npm-side TP rejection reproduce on CircleCI?** The original R-149 hypothesis. The Phase 1 snapshot publish (step 4) tests it. If it reproduces, the issue is npm-side and this whole migration buys only the local-execution improvement; in that case the recommendation flips to Option B and R-149 becomes "wait on npm-side fix."
 
 ## Consequences
 
 **Positive:**
 
-- `circleci local execute` shortens the feedback loop for the class of failure that has made A-149 painful, even with its single-job/no-secrets/no-OIDC limitations.
+- `circleci local execute` shortens the feedback loop for the class of failure that has made R-149 painful, even with its single-job/no-secrets/no-OIDC limitations.
 - The two-job split (`version-pr` / `publish`) is what the Changesets community recommends even for GitHub Actions users on OIDC, and it tightens the trust scope per job.
 - Free-tier cost is zero for this repo.
 - The custom shell-script driver is forkable into other `rheged-studio` packages later if the migration succeeds.

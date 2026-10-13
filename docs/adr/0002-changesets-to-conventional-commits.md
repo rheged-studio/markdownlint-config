@@ -5,12 +5,12 @@
 - **Deciders:** Rob Easthope (sole maintainer of `@rheged-studio/markdownlint-config`)
 - **Supersedes:** [0001 — Migrate CI from GitHub Actions to CircleCI](./0001-migrate-ci-from-github-actions-to-circleci.md) (the CI question is settled by staying on GitHub Actions)
 - **Tracking issues:**
-  - [A-379](https://linear.app/rheged-studio/issue/A-379) — migrate markdownlint-config to full eslint-config release parity
-  - [A-371](https://linear.app/rheged-studio/issue/A-371) — switch eslint-config versioning from Changesets to release-please
-  - [A-376](https://linear.app/rheged-studio/issue/A-376) — adopt release-please in the orchestrator
+  - [R-379](https://linear.app/rheged-studio/issue/R-379) — migrate markdownlint-config to full eslint-config release parity
+  - [R-371](https://linear.app/rheged-studio/issue/R-371) — switch eslint-config versioning from Changesets to release-please
+  - [R-376](https://linear.app/rheged-studio/issue/R-376) — adopt release-please in the orchestrator
 - **Mirrors:** eslint-config's ADR 0002 (`changesets-to-conventional-commits`), the org-wide pattern this repo adopts.
 
-> **Amended (A-1176).** The squash-merge / “PR title is the version signal” framing for **feature** PRs below is **superseded** by the estate dual merge policy in [shared-agents-md ADR-0003](https://github.com/rheged-studio/shared-agents-md/blob/main/docs/adr/0003-dual-merge-policy.md) ([A-1176](https://linear.app/rheged-studio/issue/A-1176)): feature/ship PRs land as **merge commits**; release-please ranks Conventional Commits on `main` (A-824); Conventional PR titles stay CI-required but are no longer the sole post-merge bump signal for feature work; the orchestrator still **squash-merges** the release PR and fan-out stays squash. The body below remains the historical Changesets → release-please decision record.
+> **Amended (R-1176).** The squash-merge / “PR title is the version signal” framing for **feature** PRs below is **superseded** by the estate dual merge policy in [shared-agents-md ADR-0003](https://github.com/rheged-studio/shared-agents-md/blob/main/docs/adr/0003-dual-merge-policy.md) ([R-1176](https://linear.app/rheged-studio/issue/R-1176)): feature/ship PRs land as **merge commits**; release-please ranks Conventional Commits on `main` (R-824); Conventional PR titles stay CI-required but are no longer the sole post-merge bump signal for feature work; the orchestrator still **squash-merges** the release PR and fan-out stays squash. The body below remains the historical Changesets → release-please decision record.
 
 ## Context
 
@@ -20,7 +20,7 @@ Keeping this repo on Changesets while its siblings move to release-please would 
 
 ## Decision
 
-Adopt **release-please with Conventional Commits**, mirroring eslint-config (A-371) and agent-skills (A-380), in **one atomic PR** (A-379):
+Adopt **release-please with Conventional Commits**, mirroring eslint-config (R-371) and agent-skills (R-380), in **one atomic PR** (R-379):
 
 - **The PR title is the version signal.** The repo squash-merges, so the squash subject is the PR title; release-please parses it (`feat` → minor, `fix`/`perf`/`revert` → patch, `!`/`BREAKING CHANGE:` → major) to compute the bump. `/send-it` maps shippable changes to `feat`/`fix`/`feat!` only. CI lints the title (`amannn/action-semantic-pull-request`).
 - **Versioning is owned by the orchestrator.** release-please runs in Clacks (not in this repo's CI), opens the release PR that bumps `package.json` + `.release-please-manifest.json`, and merges it. That merge re-fires `release.yml`, which is **publish-only**, gated by a keyless **version-vs-tag** check (publish iff `package.json`'s version has no matching `v<version>` git tag yet).
@@ -45,7 +45,7 @@ The published artifact is unchanged: `.markdownlint.jsonc` itself (no build step
 - A new TS/tsx/vitest toolchain enters the repo for the `changelog/` tooling (typecheck-only `tsc --noEmit`; nothing is published from it).
 - Out-of-band repo settings are required: an `npm-release` environment restricted to `main`, the `🔬 Build & Lint` required check, and `road-runner-bot` installed (done 2026-06-23).
 
-**Reversibility:** git-reversible in-repo. The orchestrator side (A-376) is the coordinated counterpart; both land in the same window.
+**Reversibility:** git-reversible in-repo. The orchestrator side (R-376) is the coordinated counterpart; both land in the same window.
 
 ## References
 

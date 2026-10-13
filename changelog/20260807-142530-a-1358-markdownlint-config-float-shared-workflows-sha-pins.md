@@ -12,7 +12,7 @@ co_authors: []
 category: chore
 breaking: false
 issues:
-  - A-1358
+  - R-1358
 stats:
   loc_added: 25
   loc_removed: 2
@@ -22,7 +22,7 @@ stats:
 
 ## Changed
 
-**Float stale shared-workflows SHA pins to `@v1` ([A-1358](https://linear.app/rheged-studio/issue/A-1358))**
+**Float stale shared-workflows SHA pins to `@v1` ([R-1358](https://linear.app/rheged-studio/issue/R-1358))**
 
 - `pkg-release.yml`: `reusable-changelog-enrich.yml@a87a5ba…` → `@v1`
 - `validate-payload.yml`: `reusable-validate-payload.yml@eab5cee…` → `@v1`
