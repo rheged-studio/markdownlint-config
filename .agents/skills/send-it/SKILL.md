@@ -22,7 +22,7 @@ compatibility: >-
   silently; missing `triage-pr` warns and stops at the open PR (not a successful
   default run — install it).
 metadata:
-  version: 0.11.0
+  version: 0.12.1
   author: Rob Easthope
 allowed-tools: Write, Read, Edit, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(pnpm:*), Bash(node:*), Bash(npx:*), mcp__linear-server__get_issue, mcp__linear-server__save_issue, mcp__linear-server__list_issue_statuses, mcp__linear-server__list_projects
 ---
@@ -272,6 +272,13 @@ non-zero exit:
 - **Exit 2 — pre-existing violations only.** Not introduced by this branch — do not
   block shipping. Surface them and continue (optionally offer a debt issue per the
   preflight skill).
+- **Any exit, with `lintSurface.count > 0` — lint-surface changes on the branch.**
+  The branch changes lint config files or adds ignore / disable directives (see the
+  preflight skill's [lint-surface rule](../preflight/references/lint-surfaces.md)).
+  This never blocks and never changes the exit code. Don't revert them, and never
+  add one to clear a violation in the loop above. Carry the list (`configFiles`,
+  and each directive's `file:line`) into the PR body's Evidence and the lines
+  prepended to the final report, as developer decisions to confirm.
 
 Preflight is **change-gated**: it lints only the categories the branch touched, so
 it no-ops when nothing lint-relevant changed. Skip this step entirely only if
@@ -507,8 +514,8 @@ the consumer's skill mirrors (`.claude/skills/pr/SKILL.md`,
 - **Related issues** — the issue identifiers from the branch name and commits, for
   `## Related Issues` (dropped when there are none).
 - **Evidence** — only what this run actually executed (the Step 5 preflight
-  result, any tests run in the session). CI has not run yet, so the body claims no
-  CI result.
+  result, including any `lintSurface` entries, and any tests run in the session).
+  CI has not run yet, so the body claims no CI result.
 
 **On update, carry the keep region across.** Before `gh pr edit`, read the
 current body (`gh pr view <number> --json body -q .body`) and copy every
@@ -538,9 +545,11 @@ Drop `## Related Issues` when no issues were found.
 ### Step 10: Transition linked Linear issues to In Review — delegate to the `linear-sync` skill
 
 Follow the [`linear-sync`](../linear-sync/SKILL.md) skill with target state **In
-Review**: read its `config.json` for `linearTeamName` and `issueKeys`, extract issue
-IDs from the branch and commits, resolve the live state ID by team **name** (once),
-and apply the transition idempotently (skip any issue already at or past In Review).
+Review**: read its `config.json` for `issueKeys` (and the fallback
+`linearTeamName`), take the branch's **leading** issue ID plus any IDs found in the
+commits, resolve the live state ID against **each issue's own team** by team
+**name** (once per team, cached), and apply the transition idempotently (skip any
+issue already at or past In Review).
 Skip silently if `linear-sync` or the Linear MCP server is unavailable.
 
 ### Step 11: Drive the PR to merge-ready — delegate to the `triage-pr` skill
