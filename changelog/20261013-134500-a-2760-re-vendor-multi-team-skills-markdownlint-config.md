@@ -5,7 +5,7 @@ version:
 created_at: "2026-10-13T13:45:00Z"
 merged_at:
 branch: a-2760-markdownlint-config-re-vendor-the-multi-team-skills-and
-pr:
+pr: 83
 commit:
 author: rob@rheged.studio
 co_authors: []
