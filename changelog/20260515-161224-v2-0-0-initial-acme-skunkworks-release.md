@@ -20,8 +20,8 @@ issues: []
   requirement in `CLAUDE.md`, vendored agent-skills, and the (then
   Changesets-based) release pipeline — migrated to release-please in v2.0.1.
 
-_Backfilled entry ([A-815](https://linear.app/rheged-studio/issue/A-815) /
-[A-619](https://linear.app/rheged-studio/issue/A-619)): authored after the fact
+_Backfilled entry ([R-815](https://linear.app/rheged-studio/issue/R-815) /
+[R-619](https://linear.app/rheged-studio/issue/R-619)): authored after the fact
 to reconcile the changelog with the existing `v2.0.0` tag + GitHub Release.
 Historical `branch` / `author` / `pr` / `commit` / `stats` are intentionally
 omitted, per the backfilled-entry convention in `changelog/README.md`._

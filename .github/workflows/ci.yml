@@ -4,36 +4,36 @@ on:
   pull_request:
     # `edited` is included so the changelog-completeness gate re-runs when a
     # title is corrected. Conventional PR titles stay required (CI); under dual
-    # merge policy (A-1176) feature PRs land as merge commits and release-please
-    # ranks Conventional Commits on main (A-824) — the title is no longer the
+    # merge policy (R-1176) feature PRs land as merge commits and release-please
+    # ranks Conventional Commits on main (R-824) — the title is no longer the
     # sole post-merge bump signal. A stale completeness pass on an old title
     # would still be unsafe. The conventional-PR-title lint lives in
-    # validate-pr-title.yml (A-431) and re-runs on `edited` there too.
+    # validate-pr-title.yml (R-431) and re-runs on `edited` there too.
     types: [opened, edited, synchronize, reopened]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  # A-1100 / A-1195: never cancel a RUNNING run. A superseded run's `needs` all
+  # R-1100 / R-1195: never cancel a RUNNING run. A superseded run's `needs` all
   # report `cancelled`, the always() aggregator still executes, and its verdict
   # mints a FALSE RED `GO/NO GO`. With `false`, concurrency can only cancel a
-  # *pending* run (no check-runs minted). Subsumes the A-961 release-please
+  # *pending* run (no check-runs minted). Subsumes the R-961 release-please
   # carve-out — covers every branch, not just the release one.
   cancel-in-progress: false
 
-# Defence-in-depth (ASW-313): the repo default is already read-only, but
+# Defence-in-depth (R-313): the repo default is already read-only, but
 # pin it here so a future org-policy change can't silently widen CI's token.
 permissions:
   contents: read
 
-# Wave 3 consumer (A-589 / A-593): lint + build-test run through the estate's
+# Wave 3 consumer (R-589 / R-593): lint + build-test run through the estate's
 # shared reusable workflows, floating on the `@v1` major tag so non-breaking
-# releases arrive without a per-release Dependabot SHA bump (A-662 / A-672).
+# releases arrive without a per-release Dependabot SHA bump (R-662 / R-672).
 # This repo is config-only — no build step and no ESLint (its
 # published artefact is `.markdownlint.jsonc`), so the lint job runs markdownlint
 # + YAML/actionlint + changelog validation, and build-test runs typecheck +
 # Vitest + ShellCheck + bats with `build: false`. The changelog-completeness gate
-# and the `GO/NO GO` aggregator stay local (A-418). PR-title validation is a
-# separate workflow (validate-pr-title.yml, A-431) required directly by the
+# and the `GO/NO GO` aggregator stay local (R-418). PR-title validation is a
+# separate workflow (validate-pr-title.yml, R-431) required directly by the
 # estate ruleset.
 jobs:
   config:
@@ -113,12 +113,12 @@ jobs:
       contents: read
     steps:
       - name: ⚖️ Verdict
-        # Pass/fail by inspecting the `needs` results (A-1103 / A-1195). `skipped`
+        # Pass/fail by inspecting the `needs` results (R-1103 / R-1195). `skipped`
         # is allowlisted only on `release-please--*` branches (path-skipped jobs);
         # everywhere else every needed job must report `success`. `failure`,
         # `cancelled` and a null/empty result fail the gate.
         #
-        # `cancelled` is deliberately NOT allowlisted (A-1100). NEVER reach for
+        # `cancelled` is deliberately NOT allowlisted (R-1100). NEVER reach for
         # `if: !cancelled()` on this job — a skipped check-run counts as SUCCESS
         # for required status checks and would forge the gate.
         env:
@@ -130,7 +130,7 @@ jobs:
         run: |
           set -euo pipefail
           # Allow `skipped` only on release-please path-skips; otherwise every
-          # needed job must have succeeded (A-1103).
+          # needed job must have succeeded (R-1103).
           if [[ "$HEAD_REF" == release-please--* ]]; then
             ALLOWED='["success","skipped"]'
           else

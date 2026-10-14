@@ -2,8 +2,8 @@
 title: Add npm ecosystem to Dependabot with Conventional commit prefixes
 release_note:
 version: 3.0.0
-created_at: '2026-07-28T15:13:50Z'
-merged_at: '2026-07-28T16:05:59Z'
+created_at: "2026-07-28T15:13:50Z"
+merged_at: "2026-07-28T16:05:59Z"
 branch: a-980-dependabot-conventional-commit-templates
 pr: 48
 commit: b381458
@@ -12,7 +12,7 @@ co_authors: []
 category: chore
 breaking: false
 issues:
-  - A-980
+  - R-980
 stats:
   files_changed: 2
   loc_added: 59
@@ -23,7 +23,7 @@ stats:
 ## Added
 
 - An `npm` package ecosystem in `.github/dependabot.yml`
-  ([A-980](https://linear.app/rheged-studio/issue/A-980)), grouped weekly so one lockfile
+  ([R-980](https://linear.app/rheged-studio/issue/R-980)), grouped weekly so one lockfile
   churn lands or reverts atomically. Its `commit-message` template sets `prefix`,
   `prefix-development` and `include: scope`, so bumps read `chore(deps): …` and
   `chore(deps-dev): …`. Setting both prefixes matters: `prefix` alone leaves

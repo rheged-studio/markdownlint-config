@@ -12,8 +12,8 @@ co_authors: []
 category: chore
 breaking: false
 issues:
-  - A-2760
-  - A-2724
+  - R-2760
+  - R-2724
 affected_packages:
   - infrastructure
 stats:
@@ -24,8 +24,8 @@ stats:
 
 ## Changed
 
-**Roll the multi-team Linear skills and changelog-core 1.2.0 ([A-2760](https://linear.app/rheged-studio/issue/A-2760))**
+**Roll the multi-team Linear skills and changelog-core 1.2.0 ([R-2760](https://linear.app/rheged-studio/issue/R-2760))**
 
 - Re-vendor the estate catalogue from agent-skills v1.13.0 into `.claude` and `.agents`
-- Set `issueKeys` to `["R", "A"]` in the skill configs that carry it ([A-2724](https://linear.app/rheged-studio/issue/A-2724))
+- Set `issueKeys` to `["R", "A"]` in the skill configs that carry it ([R-2724](https://linear.app/rheged-studio/issue/R-2724))
 - Bump the `@rheged-studio/changelog-core` devDependency to `^1.2.0`

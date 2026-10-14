@@ -12,7 +12,7 @@ co_authors: []
 category: chore
 breaking: false
 issues:
-  - A-2309
+  - R-2309
 affected_packages:
   - infrastructure
 stats:
@@ -23,9 +23,9 @@ stats:
 
 ## Changed
 
-**Roll shared agent skills to the v1.3.1 estate catalogue ([A-2309](https://linear.app/rheged-studio/issue/A-2309))**
+**Roll shared agent skills to the v1.3.1 estate catalogue ([R-2309](https://linear.app/rheged-studio/issue/R-2309))**
 
 - Re-vendor Rheged and Matt Pocock bundles on `.claude` and `.agents` mirrors via `fleet-update.mjs`
 - Drop upstream-removed `resolving-merge-conflicts`; add `implement-spec` and `retro`; adopt Rheged `pr`
 - Set `triage-pr` to unattended Phase B (`humanEnvelope: false`) with `followUpLabel: follow-up`
-- Restore per-skill `config.json` after copy ([A-706](https://linear.app/rheged-studio/issue/A-706))
+- Restore per-skill `config.json` after copy ([R-706](https://linear.app/rheged-studio/issue/R-706))

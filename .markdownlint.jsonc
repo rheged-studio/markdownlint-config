@@ -50,14 +50,14 @@
 
   // MD040 — Require a language tag on every fenced code block. Pseudo-code,
   // verbatim CLI output, and other language-less samples use `text`, `console`,
-  // or `plaintext`. Re-enabled after the Hecate comparison (A-928); previously
+  // or `plaintext`. Re-enabled after the Hecate comparison (R-928); previously
   // re-disabled in protomolecule PR #345 over friction with untagged samples.
   "MD040": true,
 
   // MD041 — Require a first-line H1, or a frontmatter `title:` as an
   // alternative (not itself an H1). Fragments with neither still fail;
   // exclude via consumer `ignores` or disable-next-line. Estate audit:
-  // A-1199 (split from A-929).
+  // R-1199 (split from R-929).
   "MD041": true,
 
   // MD044 — Proper-name capitalisation. Conservative list only: short format /

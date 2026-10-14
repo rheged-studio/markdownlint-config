@@ -12,7 +12,7 @@ This repo is the new home for the markdownlint configuration previously shipped 
 - **Last published version under the old name/origin:** `@robeasthope/markdownlint-config@1.1.1`
 - **First version published under the new name/origin:** `@acme-skunkworks/markdownlint-config@1.0.0` (the rename itself is the breaking change for consumers; the new scope publishes from 1.0.0 because npm treats it as a brand-new package, and configuration bytes are byte-identical to the predecessor's v1.1.1)
 - **Port date:** 2026-05-08
-- **Tracking ticket:** [A-91](https://linear.app/goose-and-hobbes/issue/A-91)
+- **Tracking ticket:** [R-91](https://linear.app/rheged-studio/issue/R-91)
 
 ## What changed in the port
 
@@ -77,7 +77,7 @@ The legacy `@robeasthope/markdownlint-config` package on npm has its own Trusted
 
 ## Infrastructure cloned from `acme-skunkworks/eslint-config`
 
-Per A-91 scope, the standalone-repo infrastructure was cloned from the sibling `acme-skunkworks/eslint-config`:
+Per R-91 scope, the standalone-repo infrastructure was cloned from the sibling `acme-skunkworks/eslint-config`:
 
 - **Workflows:** `ci.yml` (build-and-lint + yaml-lint, both gated against `changeset-release/*`), `release.yml` (Changesets via OIDC, with the npm self-upgrade workaround and the package@version retitle step), `claude.yml` (interactive `@claude` mentions), `claude-code-review.yml` (auto PR review).
 - **Husky kit:** `pre-commit` (lint-staged), `commit-msg` (strip Claude trailers), `pre-push` (block direct pushes to `main`).

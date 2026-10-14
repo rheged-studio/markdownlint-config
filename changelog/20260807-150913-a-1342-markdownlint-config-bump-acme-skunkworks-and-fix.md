@@ -12,7 +12,7 @@ co_authors: []
 category: chore
 breaking: false
 issues:
-  - A-1342
+  - R-1342
 stats:
   files_changed: 3
   loc_added: 42
@@ -22,7 +22,7 @@ stats:
 
 ## Changed
 
-**Bump changelog-core and commitlint-config ([A-1342](https://linear.app/rheged-studio/issue/A-1342))**
+**Bump changelog-core and commitlint-config ([R-1342](https://linear.app/rheged-studio/issue/R-1342))**
 
 - Raise `@acme-skunkworks/changelog-core` to `^1.1.1` and
   `@acme-skunkworks/commitlint-config` to `^1.0.1`

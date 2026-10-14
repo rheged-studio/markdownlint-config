@@ -7,14 +7,14 @@ merged_at: "2026-06-23T19:28:27Z"
 category: chore
 breaking: false
 issues:
-  - A-379
+  - R-379
 ---
 
 ## Changed
 
 - Flipped the release pipeline from Changesets to **release-please**
   (`skip-changelog`) and added the dated `changelog/` subsystem plus the
-  infrastructure TS toolchain (A-379).
+  infrastructure TS toolchain (R-379).
 - Rewrote `/send-it`, `CLAUDE.md`, and the ADRs for the release-please flow, and
   hardened checkout credential persistence and the pre-push bypass.
 
@@ -24,7 +24,7 @@ issues:
   it now packs into an isolated directory and asserts a single artifact.
 - Changelog validation accepts millisecond-precision ISO timestamps.
 
-_Backfilled entry ([A-815](https://linear.app/rheged-studio/issue/A-815) /
-[A-619](https://linear.app/rheged-studio/issue/A-619)): authored after the fact
+_Backfilled entry ([R-815](https://linear.app/rheged-studio/issue/R-815) /
+[R-619](https://linear.app/rheged-studio/issue/R-619)): authored after the fact
 to reconcile the changelog with the existing `v2.0.1` tag + GitHub Release. No
 changes to the published markdownlint preset itself — infrastructure only._

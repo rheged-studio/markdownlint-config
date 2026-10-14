@@ -11,7 +11,7 @@ co_authors: []
 category: docs
 breaking: false
 issues:
-  - A-1322
+  - R-1322
 stats:
   files_changed: 3
   loc_added: 45
@@ -22,6 +22,6 @@ version: 3.0.1
 
 ## Changed
 
-**Refresh AGENTS.md to Rheged Studio canonical ([A-1322](https://linear.app/rheged-studio/issue/A-1322))**
+**Refresh AGENTS.md to Rheged Studio canonical ([R-1322](https://linear.app/rheged-studio/issue/R-1322))**
 
 - Replace root `AGENTS.md` with `shared-agents-md@v0.3.0` Rheged Studio canonical
